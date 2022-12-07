@@ -1,22 +1,37 @@
 from timeit import default_timer as timer
 
 lines = str()
-with open('1_input.txt') as f:
-    lines = [int(n) for n in f.readlines()]
+with open('01.txt') as f:
+    # lines = [int(n) for n in f.readlines()]
+	lines = f.readlines()
 
 def part1(lines):
-	count = 0
-	for i in range(1, len(lines)):
-		if int(lines[i]) > int(lines[i-1]):
-			count += 1
-	return count
+	totalCounts = []
+	currentCount = 0
+	for line in lines:
+		if line == "\n":
+			totalCounts.append(currentCount)
+			currentCount = 0
+			continue
+		else:
+			currentCount += int(line)
+
+	totalCounts.sort()
+	return totalCounts[-1]
 
 def part2(lines):
-	count = 0
-	for i in range(3, len(lines)):
-		if (int(lines[i]) > int(lines[i-3])):
-			count += 1
-	return count
+	totalCounts = []
+	currentCount = 0
+	for line in lines:
+		if line == "\n":
+			totalCounts.append(currentCount)
+			currentCount = 0
+			continue
+		else:
+			currentCount += int(line)
+
+	totalCounts.sort()
+	return totalCounts[-1] + totalCounts[-2] + totalCounts[-3]
 
 
 start = timer()
