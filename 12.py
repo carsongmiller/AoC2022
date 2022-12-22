@@ -27,7 +27,6 @@ def part1(grid):
 
 	return distances[goal[0]][goal[1]]	
 
-		
 
 def part2(grid):
 	distances = []
@@ -114,6 +113,7 @@ def dijkstra(grid, distances, source):
 					neighbors.append((r, c + 1))
 				if distances[r][c] + 1 < distances[r][c + 1]:
 					distances[r][c + 1] = distances[r][c] + 1
+
 
 start = timer()
 p1 = part1(input)
