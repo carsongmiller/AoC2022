@@ -1,4 +1,3 @@
-
 Sensor at x=2332081, y=2640840: closest beacon is at x=2094728, y=2887414
 Sensor at x=3048293, y=3598671: closest beacon is at x=3872908, y=3598272
 Sensor at x=2574256, y=3973583: closest beacon is at x=2520711, y=4005929
