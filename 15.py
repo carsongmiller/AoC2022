@@ -1,8 +1,4 @@
 from timeit import default_timer as timer
-from collections import Counter
-from functools import cmp_to_key
-import numpy as np
-import math
 
 with open('15.txt') as f:
 	input = f.read().strip().split('\n')
@@ -16,7 +12,7 @@ def part1(lines):
 	sbPairs = getSBPairs(lines)
 
 	for sbPair in sbPairs:
-		s = sbPair[0]
+		s = sbPair[0]				
 		b = sbPair[1]
 
 		if s[1] == yTarget:
@@ -42,12 +38,54 @@ def part1(lines):
 				covered.add(x)
 	
 	return len(covered) - len(sensorsAtTarget) - len(beaconsAtTarget)
-	
 
 
 def part2(lines):
-	max = 20
+	max = 4000000
 	sbPairs = getSBPairs(lines)
+
+	all_gaps = {}
+
+	# build list of boundaries
+	for pair in sbPairs:
+		s = pair[0]
+		b = pair[1]
+
+		man = manhattan(s, b) #distance between sensor and beacon		
+
+		pos_top = (True, s[1] + s[0] + man + 1)
+		pos_bot = (True, s[1] + s[0] - man - 1)
+
+		neg_top = (False, s[1] - s[0] + man + 1)
+		neg_bot = (False, s[1] - s[0] - man - 1)
+
+		for gap in [pos_top, pos_bot, neg_top, neg_bot]:
+			if gap in all_gaps:
+				all_gaps[gap] += 1
+			else:
+				all_gaps[gap] = 1
+
+	gaps_pos = []
+	gaps_neg = []
+
+	for gap, count in all_gaps.items():
+		if count > 1:
+			if gap[0]:
+				gaps_pos.append(gap[1])
+			else:
+				gaps_neg.append(gap[1])
+
+	intersections = []
+
+	for candidate_pos in gaps_pos:
+		for candidate_neg in gaps_neg:
+			# if candidates add up to an odd number, they won't work
+			if (candidate_pos + candidate_neg) % 2 == 0:
+				y = (candidate_pos + candidate_neg) // 2
+				x = (candidate_pos - candidate_neg) // 2
+				if 0 <= x <= max and 0 <= y <= max and outsideAllSensors(sbPairs, x, y):
+					return getTuningFreq(x, y)
+	
 
 
 def getSBPairs(lines: list[str]):
@@ -62,9 +100,21 @@ def getSBPairs(lines: list[str]):
 	return (sbPairs)
 
 
-
 def manhattan(a: tuple[int, int], b: tuple[int, int]) -> int:
 	return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+def outsideAllSensors(sbPairs, x, y):
+	for pair in sbPairs:
+		s = pair[0]
+		b = pair[1]
+		sensor_range = manhattan(s, b)
+		distance = manhattan(s, [x, y])
+		if distance <= sensor_range:
+			return False
+	return True
+
+def getTuningFreq(x, y):
+	return x * 4000000 + y
 
 
 start = timer()
